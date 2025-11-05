@@ -18,7 +18,7 @@ import {
   CheckCircle,
   Folder
 } from 'lucide-react'
-import { formatDuration } from '../lib/utils'
+import { formatDuration } from '../lib/utils.js'
 import toast from 'react-hot-toast'
 import AudioRecorder from '../utils/audioRecorder'
 import FinalNotesDocument from '../components/FinalNotesDocument'

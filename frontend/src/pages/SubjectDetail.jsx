@@ -22,7 +22,7 @@ import {
   AlertCircle
 } from 'lucide-react'
 import { format } from 'date-fns'
-import { formatDuration } from '../lib/utils'
+import { formatDuration } from '../lib/utils.js'
 
 // Mock subject data
 const subjectData = {

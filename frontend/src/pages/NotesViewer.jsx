@@ -17,7 +17,7 @@ import {
   StarOff
 } from 'lucide-react'
 import { format } from 'date-fns'
-import { formatDuration } from '../lib/utils'
+import { formatDuration } from '../lib/utils.js'
 import toast from 'react-hot-toast'
 
 // Mock data for the lecture notes
