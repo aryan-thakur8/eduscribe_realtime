@@ -11,6 +11,8 @@ sys.path.insert(0, os.path.dirname(__file__))
 from dotenv import load_dotenv
 load_dotenv()  # This loads the .env file!
 
+print("ygtygtyg")
+
 from database.mongodb_connection import (
     init_mongodb,
     setup_indexes,
