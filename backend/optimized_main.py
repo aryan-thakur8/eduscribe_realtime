@@ -53,6 +53,17 @@ load_dotenv()  # Load environment variables
 init_mongodb()
 print("✅ MongoDB initialized for document storage and vector search")
 
+# Import and include authentication routes
+from app.api.auth import router as auth_router
+from app.api.notes import router as notes_router
+from app.api.subjects_new import router as subjects_router
+from app.api.dashboard import router as dashboard_router
+
+app.include_router(auth_router)
+app.include_router(notes_router)
+app.include_router(subjects_router)
+app.include_router(dashboard_router)
+
 
 class OptimizedAudioProcessor:
     """Handles optimized audio processing with agentic synthesis"""
@@ -75,8 +86,14 @@ class OptimizedAudioProcessor:
     async def process_audio_chunk(self, lecture_id: str, audio_file: UploadFile, websocket: WebSocket):
         """Process 20-second audio chunk"""
         try:
-            # Save audio file
+            # Save audio file with correct extension based on content type
             timestamp = int(time.time() * 1000)
+            
+            # Detect format from filename or content type
+            original_filename = audio_file.filename or "audio.wav"
+            extension = original_filename.split('.')[-1] if '.' in original_filename else 'wav'
+            
+            # Always use WAV for consistency (Web Audio API generates WAV)
             filename = f"chunk_{lecture_id}_{timestamp}.wav"
             file_path = self.temp_dir / filename
             
@@ -415,13 +432,42 @@ async def get_subjects():
 
 
 @app.post("/api/lectures/")
-async def create_lecture(data: dict):
-    """Create a new lecture"""
-    lecture_id = f"lecture-{int(time.time())}"
+async def create_lecture_endpoint(data: dict):
+    """Create a new lecture (with optional user authentication)"""
+    from app.api.auth import get_current_user
+    from fastapi import Header
+    from typing import Optional
+    
+    # Try to get user from token (optional for now)
+    user_id = None
+    authorization = data.get("authorization") or data.get("token")
+    
+    if authorization:
+        try:
+            from app.services.auth_service import verify_token
+            user = await verify_token(authorization.replace("Bearer ", ""))
+            if user:
+                user_id = user["user_id"]
+        except:
+            pass
+    
+    # Save to MongoDB and get the generated lecture_id
+    try:
+        lecture_id = await create_lecture(
+            user_id=user_id,
+            subject_id=data.get("subject_id"),
+            title=data.get("title", "New Lecture")
+        )
+    except Exception as e:
+        logger.error(f"Error creating lecture in MongoDB: {e}")
+        # Fallback to generating ID if MongoDB fails
+        lecture_id = f"lecture-{int(time.time())}"
+    
     return {
         "id": lecture_id,
         "title": data.get("title", "New Lecture"),
         "subject_id": data.get("subject_id"),
+        "user_id": user_id,
         "status": "created"
     }
 
@@ -521,8 +567,9 @@ async def websocket_endpoint(websocket: WebSocket, lecture_id: str):
             "message": "WebSocket connected - Ready for optimized audio processing"
         })
         
-        # Keep connection alive and handle messages
+        # Keep connection alive and handle JSON messages only
         while True:
+            # Receive text message (JSON commands)
             data = await websocket.receive_text()
             message = json.loads(data)
             
@@ -530,11 +577,14 @@ async def websocket_endpoint(websocket: WebSocket, lecture_id: str):
                 logger.info(f"Starting recording for lecture {lecture_id}")
                 await websocket.send_json({
                     "type": "recording_started",
-                    "message": "Recording started - Send 20-second audio chunks"
+                    "message": "Recording started - Send 20-second audio chunks via HTTP"
                 })
             
             elif message.get("type") == "stop_recording":
                 logger.info(f"Stopping recording for lecture {lecture_id}")
+                
+                # Wait a moment for final processing
+                await asyncio.sleep(2)
                 
                 # Final synthesis if there are remaining transcriptions
                 if len(processor.transcription_buffers[lecture_id]) > 0:
@@ -548,6 +598,10 @@ async def websocket_endpoint(websocket: WebSocket, lecture_id: str):
                     "type": "recording_stopped",
                     "message": "Recording stopped"
                 })
+                
+            elif message.get("type") == "request_final_synthesis":
+                logger.info(f"Manual final synthesis requested for {lecture_id}")
+                await processor.final_synthesis(lecture_id, websocket)
             
     except WebSocketDisconnect:
         manager.disconnect(lecture_id)

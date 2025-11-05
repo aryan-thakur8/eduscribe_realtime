@@ -8,6 +8,7 @@ from typing import Optional, List, Dict, Any
 import numpy as np
 from datetime import datetime
 import os
+import time
 from app.core.config import settings
 
 # Global MongoDB client
@@ -429,3 +430,159 @@ async def get_lecture_stats(lecture_id: str) -> Dict:
     }
     
     return stats
+
+# ============================================================================
+# USER-SPECIFIC FUNCTIONS
+# ============================================================================
+
+async def get_user_lectures(user_id: str, limit: int = 50) -> List[Dict]:
+    """Get all lectures for a specific user"""
+    db = get_db()
+    
+    cursor = db.lectures.find(
+        {"user_id": user_id}
+    ).sort("created_at", -1).limit(limit)
+    
+    lectures = []
+    async for lecture in cursor:
+        lecture["_id"] = str(lecture["_id"])
+        lectures.append(lecture)
+    
+    return lectures
+
+async def get_user_final_notes(user_id: str, limit: int = 50) -> List[Dict]:
+    """Get all final notes for a specific user"""
+    db = get_db()
+    
+    # Get lectures for this user
+    lectures = await get_user_lectures(user_id, limit=limit)
+    lecture_ids = [lecture["_id"] for lecture in lectures]
+    
+    if not lecture_ids:
+        return []
+    
+    # Get final notes for these lectures
+    cursor = db.final_notes.find(
+        {"lecture_id": {"$in": lecture_ids}}
+    ).sort("created_at", -1)
+    
+    notes = []
+    async for note in cursor:
+        note["_id"] = str(note["_id"])
+        
+        # Add lecture info
+        lecture = next((l for l in lectures if l["_id"] == note["lecture_id"]), None)
+        if lecture:
+            note["lecture_title"] = lecture.get("title", "Untitled")
+            note["subject_id"] = lecture.get("subject_id")
+        
+        notes.append(note)
+    
+    return notes
+
+async def get_lecture_with_notes(lecture_id: str, user_id: str) -> Optional[Dict]:
+    """Get lecture with all its notes (ownership verified)"""
+    db = get_db()
+    
+    # Get lecture and verify ownership
+    lecture = await db.lectures.find_one({"_id": lecture_id, "user_id": user_id})
+    if not lecture:
+        return None
+    
+    # Get all related data
+    lecture["_id"] = str(lecture["_id"])
+    lecture["transcriptions"] = []
+    lecture["structured_notes"] = []
+    lecture["final_notes"] = None
+    lecture["documents"] = []
+    
+    # Fetch transcriptions
+    async for trans in db.transcriptions.find({"lecture_id": lecture_id}).sort("chunk_index", 1):
+        trans["_id"] = str(trans["_id"])
+        lecture["transcriptions"].append(trans)
+    
+    # Fetch structured notes
+    async for note in db.structured_notes.find({"lecture_id": lecture_id}).sort("created_at", 1):
+        note["_id"] = str(note["_id"])
+        lecture["structured_notes"].append(note)
+    
+    # Fetch final notes
+    final = await db.final_notes.find_one({"lecture_id": lecture_id})
+    if final:
+        final["_id"] = str(final["_id"])
+        lecture["final_notes"] = final
+    
+    # Fetch documents
+    async for doc in db.documents.find({"lecture_id": lecture_id}):
+        doc["_id"] = str(doc["_id"])
+        lecture["documents"].append(doc)
+    
+    return lecture
+
+async def save_transcription(lecture_id: str, chunk_index: int, text: str,
+                            enhanced_notes: str, timestamp: str, 
+                            importance: float) -> str:
+    """Save transcription chunk"""
+    db = get_db()
+    
+    transcription = {
+        "lecture_id": lecture_id,
+        "chunk_index": chunk_index,
+        "text": text,
+        "enhanced_notes": enhanced_notes,
+        "timestamp": timestamp,
+        "importance": importance,
+        "metadata": {},
+        "created_at": datetime.utcnow()
+    }
+    
+    # Upsert (update if exists, insert if not)
+    result = await db.transcriptions.update_one(
+        {"lecture_id": lecture_id, "chunk_index": chunk_index},
+        {"$set": transcription},
+        upsert=True
+    )
+    
+    return str(result.upserted_id) if result.upserted_id else "updated"
+
+async def save_structured_notes(lecture_id: str, content: str, 
+                               transcription_count: int) -> str:
+    """Save structured notes"""
+    db = get_db()
+    
+    note = {
+        "lecture_id": lecture_id,
+        "content": content,
+        "transcription_count": transcription_count,
+        "metadata": {},
+        "created_at": datetime.utcnow()
+    }
+    
+    result = await db.structured_notes.insert_one(note)
+    return str(result.inserted_id)
+
+async def save_final_notes(lecture_id: str, title: str, markdown: str,
+                          sections: List[Dict], glossary: Dict, 
+                          key_takeaways: List[str]) -> str:
+    """Save final comprehensive notes"""
+    db = get_db()
+    
+    final_note = {
+        "lecture_id": lecture_id,
+        "title": title,
+        "markdown": markdown,
+        "sections": sections,
+        "glossary": glossary,
+        "key_takeaways": key_takeaways,
+        "metadata": {},
+        "created_at": datetime.utcnow()
+    }
+    
+    # Upsert (one final note per lecture)
+    result = await db.final_notes.update_one(
+        {"lecture_id": lecture_id},
+        {"$set": final_note},
+        upsert=True
+    )
+    
+    return str(result.upserted_id) if result.upserted_id else "updated"
