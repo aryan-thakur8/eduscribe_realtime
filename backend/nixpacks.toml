@@ -1,8 +1,10 @@
 [phases.setup]
+# Force Nixpacks to include Python and pip
 nixPkgs = ["python311", "python311Packages.pip"]
 
 [phases.install]
-cmds = ["pip install --upgrade pip", "pip install -r requirements-railway.txt"]
+# Only install dependencies — never upgrade pip
+cmds = ["python -m pip install --no-cache-dir -r requirements-railway.txt"]
 
 [start]
 cmd = "python real_main.py"
