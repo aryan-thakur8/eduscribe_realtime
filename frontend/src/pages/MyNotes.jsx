@@ -23,7 +23,7 @@ const MyNotes = () => {
   const { user, logout, getAuthHeader } = useAuth();
   const navigate = useNavigate();
 
-  const API_URL = 'http://localhost:8001';
+  const API_URL = 'https://final-eduscribe.onrender.com';
 
   useEffect(() => {
     fetchMyNotes();

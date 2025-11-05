@@ -16,7 +16,7 @@ export const AuthProvider = ({ children }) => {
   const [token, setToken] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  const API_URL = 'http://localhost:8001';
+  const API_URL = 'https://final-eduscribe.onrender.com';
 
   // Load user from localStorage on mount
   useEffect(() => {

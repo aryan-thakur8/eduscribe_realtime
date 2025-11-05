@@ -31,7 +31,7 @@ const Dashboard_Professional = () => {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
 
-  const API_URL = 'http://localhost:8001';
+  const API_URL = 'https://final-eduscribe.onrender.com';
 
   useEffect(() => {
     fetchDashboardData();

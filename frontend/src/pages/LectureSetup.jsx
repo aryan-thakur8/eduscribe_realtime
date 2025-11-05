@@ -27,7 +27,7 @@ const LectureSetup = () => {
   const [uploading, setUploading] = useState(false);
   const [creating, setCreating] = useState(false);
 
-  const API_URL = 'http://localhost:8001';
+  const API_URL = 'https://final-eduscribe.onrender.com';
 
   const handleFileSelect = (e) => {
     const files = Array.from(e.target.files);

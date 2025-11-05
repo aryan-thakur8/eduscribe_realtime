@@ -290,7 +290,7 @@ export default function LiveLecture() {
         formData.append('audio_file', wavBlob, 'audio_chunk.wav')
         
         try {
-          const response = await fetch(`http://localhost:8001/api/audio/lecture/${lectureId}/chunk`, {
+          const response = await fetch(`https://final-eduscribe.onrender.com/api/audio/lecture/${lectureId}/chunk`, {
             method: 'POST',
             body: formData
           })
