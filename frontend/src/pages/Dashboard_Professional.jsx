@@ -31,7 +31,7 @@ const Dashboard_Professional = () => {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
 
-  const API_URL = 'https://final-eduscribe.onrender.com';
+  const API_URL = 'https://d8d79da7706e.ngrok-free.app';
 
   useEffect(() => {
     fetchDashboardData();
