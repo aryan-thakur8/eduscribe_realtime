@@ -91,7 +91,12 @@ const LiveLecture = () => {
   }, [lectureId]);
 
   const connectWebSocket = () => {
-    const ws = new WebSocket(`ws://localhost:8001/ws/lecture/${lectureId}`);
+    const WS_BASE_URL = "wss://unduly-coherent-bear.ngrok-free.app";
+    const ws = new WebSocket(`${WS_BASE_URL}/ws/lecture/${lectureId}`,[], {
+      headers: {
+        'ngrok-skip-browser-warning': 'true'
+      }
+    });
     
     ws.onopen = () => {
       console.log('✅ WebSocket connected');
@@ -201,9 +206,12 @@ const LiveLecture = () => {
         formData.append('audio_file', wavBlob, 'audio_chunk.wav');
         
         try {
-          const response = await fetch(`https://final-eduscribe.onrender.com/api/audio/lecture/${lectureId}/chunk`, {
+          const response = await fetch(`https://unduly-coherent-bear.ngrok-free.app/api/audio/lecture/${lectureId}/chunk`, {
             method: 'POST',
-            headers: getAuthHeader(),
+            headers: {
+              ...getAuthHeader(),
+              'ngrok-skip-browser-warning': 'true'
+            },
             body: formData
           });
           

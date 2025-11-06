@@ -139,10 +139,14 @@ export default function LiveLecture() {
     console.log('Connecting to WebSocket for lecture:', lectureId)
     
     // Try multiple connection approaches
-    const wsUrl = `ws://localhost:8001/ws/lecture/${lectureId}`
+    const wsUrl = `ws://unduly-coherent-bear.ngrok-free.app/ws/lecture/${lectureId}`
     console.log('WebSocket URL:', wsUrl)
     
-    const ws = new WebSocket(wsUrl)
+    const ws = new WebSocket(wsUrl,[],{
+      headers: {
+        'ngrok-skip-browser-warning': 'true'
+      }
+    })
     websocketRef.current = ws
 
     ws.onopen = () => {
