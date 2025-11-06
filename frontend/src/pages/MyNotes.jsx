@@ -23,7 +23,7 @@ const MyNotes = () => {
   const { user, logout, getAuthHeader } = useAuth();
   const navigate = useNavigate();
 
-  const API_URL = 'https://final-eduscribe.onrender.com';
+  const API_URL = 'https://d8d79da7706e.ngrok-free.app';
 
   useEffect(() => {
     fetchMyNotes();
