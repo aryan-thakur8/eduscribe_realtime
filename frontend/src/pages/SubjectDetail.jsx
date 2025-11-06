@@ -154,7 +154,7 @@ export default function SubjectDetail() {
     
     try {
       // Create lecture in backend
-      const lectureResponse = await fetch('https://final-eduscribe.onrender.com/api/lectures/', {
+      const lectureResponse = await fetch('https://d8d79da7706e.ngrok-free.app/api/lectures/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -174,7 +174,7 @@ export default function SubjectDetail() {
           formData.append('files', doc.file)
         })
         
-        await fetch(`https://final-eduscribe.onrender.com/api/documents/lecture/${lectureData.id}/upload`, {
+        await fetch(`https://d8d79da7706e.ngrok-free.app/api/documents/lecture/${lectureData.id}/upload`, {
           method: 'POST',
           body: formData
         })
