@@ -210,6 +210,7 @@ const LiveLecture = () => {
             method: 'POST',
             headers: {
               ...getAuthHeader(),
+              // "Content_Type": "application/json",
               'ngrok-skip-browser-warning': 'true'
             },
             body: formData

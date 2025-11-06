@@ -154,11 +154,13 @@ export default function SubjectDetail() {
     
     try {
       // Create lecture in backend
-      const lectureResponse = await fetch('https://d8d79da7706e.ngrok-free.app/api/lectures/', {
+      const lectureResponse = await fetch('https://unduly-coherent-bear.ngrok-free.app/api/lectures/', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+         headers: {
+    ...getAuthHeader(),
+    "Content-Type": "application/json",
+    'ngrok-skip-browser-warning': 'true', // ⬅️ prevents the ngrok banner
+  },
         body: JSON.stringify({
           subject_id: subjectId,
           title: lectureTitle

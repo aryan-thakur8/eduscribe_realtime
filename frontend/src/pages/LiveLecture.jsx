@@ -294,8 +294,13 @@ export default function LiveLecture() {
         formData.append('audio_file', wavBlob, 'audio_chunk.wav')
         
         try {
-          const response = await fetch(`https://final-eduscribe.onrender.com/api/audio/lecture/${lectureId}/chunk`, {
+          const response = await fetch(`https://unduly-coherent-bear.ngrok-free.app/api/audio/lecture/${lectureId}/chunk`, {
             method: 'POST',
+            headers: {
+    ...getAuthHeader(),
+    // "Content-Type": "application/json",
+    'ngrok-skip-browser-warning': 'true', // ⬅️ prevents the ngrok banner
+  },
             body: formData
           })
           
