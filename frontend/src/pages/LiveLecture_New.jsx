@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
+import axios from 'axios';
 import { 
   Mic, 
   MicOff, 
@@ -206,15 +207,23 @@ const LiveLecture = () => {
         formData.append('audio_file', wavBlob, 'audio_chunk.wav');
         
         try {
+          // const API_URL = 'https://unduly-coherent-bear.ngrok-free.app';
+          //   axios.defaults.baseURL = API_URL;
+          //     axios.defaults.headers.post['Content-Type'] = 'application/json';
+          //     axios.defaults.headers.common['ngrok-skip-browser-warning'] = 'true';
+          // const response = await fetch(`${API_URL}/api/audio/lecture/${lectureId}/chunk`, {
+          //   method: 'POST',
+          //   headers: getAuthHeader(),
+          //   body: formData
+          // });
+
           const API_URL = 'https://unduly-coherent-bear.ngrok-free.app';
-            axios.defaults.baseURL = API_URL;
-              axios.defaults.headers.post['Content-Type'] = 'application/json';
-              axios.defaults.headers.common['ngrok-skip-browser-warning'] = 'true';
-          const response = await fetch(`${API_URL}/api/audio/lecture/${lectureId}/chunk`, {
-            method: 'POST',
-            headers: getAuthHeader(),
-            body: formData
-          });
+                      axios.defaults.baseURL = API_URL;
+                        axios.defaults.headers.post['Content-Type'] = 'application/json';
+                        axios.defaults.headers.common['ngrok-skip-browser-warning'] = 'true';
+                    const response = await axios.post(`${API_URL}/api/audio/lecture/${lectureId}/chunk`, formData, {
+                      headers: getAuthHeader()
+                    })
           
           if (response.ok) {
             const result = await response.json();
