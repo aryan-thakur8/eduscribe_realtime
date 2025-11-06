@@ -16,7 +16,7 @@ export const AuthProvider = ({ children }) => {
   const [token, setToken] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  const API_URL = 'https://d8d79da7706e.ngrok-free.app/';
+  const API_URL = 'https://d8d79da7706e.ngrok-free.app';
 
   // Load user from localStorage on mount
   useEffect(() => {
