@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { useParams, useNavigate, Link, useLocation } from 'react-router-dom'
+import axios from 'axios'
 import { 
   Mic, 
   MicOff, 
@@ -298,10 +299,8 @@ export default function LiveLecture() {
             axios.defaults.baseURL = API_URL;
               axios.defaults.headers.post['Content-Type'] = 'application/json';
               axios.defaults.headers.common['ngrok-skip-browser-warning'] = 'true';
-          const response = await fetch(`${API_URL}/api/audio/lecture/${lectureId}/chunk`, {
-            method: 'POST',
-            headers: getAuthHeader(),
-            body: formData
+          const response = await axios.post(`${API_URL}/api/audio/lecture/${lectureId}/chunk`, formData, {
+            headers: getAuthHeader()
           })
           
           const result = await response.json()
