@@ -31,7 +31,10 @@ const Dashboard_Professional = () => {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
 
-  const API_URL = 'https://d8d79da7706e.ngrok-free.app';
+  const API_URL = 'https://unduly-coherent-bear.ngrok-free.app';
+  axios.defaults.baseURL = API_URL;
+    axios.defaults.headers.post['Content-Type'] = 'application/json';
+    axios.defaults.headers.common['ngrok-skip-browser-warning'] = 'true';
 
   useEffect(() => {
     fetchDashboardData();
