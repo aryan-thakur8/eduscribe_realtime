@@ -219,7 +219,7 @@ const LiveLecture = () => {
 
           const API_URL = 'https://unduly-coherent-bear.ngrok-free.app';
                       axios.defaults.baseURL = API_URL;
-                        axios.defaults.headers.post['Content-Type'] = 'application/json';
+                        // axios.defaults.headers.post['Content-Type'] = 'application/json';
                         axios.defaults.headers.common['ngrok-skip-browser-warning'] = 'true';
                     const response = await axios.post(`${API_URL}/api/audio/lecture/${lectureId}/chunk`, formData, {
                       headers: getAuthHeader()
