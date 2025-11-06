@@ -31,7 +31,7 @@ const SubjectsManagement = () => {
     description: ''
   });
 
-  const API_URL = 'https://final-eduscribe.onrender.com';
+  const API_URL = 'https://d8d79da7706e.ngrok-free.app';
 
   useEffect(() => {
     fetchSubjects();
