@@ -27,7 +27,7 @@ const LectureSetup = () => {
   const [uploading, setUploading] = useState(false);
   const [creating, setCreating] = useState(false);
 
-  const API_URL = 'https://final-eduscribe.onrender.com';
+  const API_URL = 'https://d8d79da7706e.ngrok-free.app';
 
   const handleFileSelect = (e) => {
     const files = Array.from(e.target.files);
