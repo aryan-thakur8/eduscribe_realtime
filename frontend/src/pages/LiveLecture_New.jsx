@@ -206,13 +206,13 @@ const LiveLecture = () => {
         formData.append('audio_file', wavBlob, 'audio_chunk.wav');
         
         try {
-          const response = await fetch(`https://unduly-coherent-bear.ngrok-free.app/api/audio/lecture/${lectureId}/chunk`, {
+          const API_URL = 'https://unduly-coherent-bear.ngrok-free.app';
+            axios.defaults.baseURL = API_URL;
+              axios.defaults.headers.post['Content-Type'] = 'application/json';
+              axios.defaults.headers.common['ngrok-skip-browser-warning'] = 'true';
+          const response = await fetch(`${API_URL}/api/audio/lecture/${lectureId}/chunk`, {
             method: 'POST',
-            headers: {
-              ...getAuthHeader(),
-              // "Content_Type": "application/json",
-              'ngrok-skip-browser-warning': 'true'
-            },
+            headers: getAuthHeader(),
             body: formData
           });
           
