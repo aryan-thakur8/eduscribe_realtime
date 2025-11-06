@@ -176,7 +176,7 @@ export default function SubjectDetail() {
           formData.append('files', doc.file)
         })
         
-        await fetch(`https://d8d79da7706e.ngrok-free.app/api/documents/lecture/${lectureData.id}/upload`, {
+        await fetch(`https://unduly-coherent-bear.ngrok-free.app/api/documents/lecture/${lectureData.id}/upload`, {
           method: 'POST',
           body: formData
         })
