@@ -41,6 +41,7 @@ export default function Dashboard() {
           AI-powered intelligent lecture note generation system
         </p>
       </div>
+       <p className='text-xl text-black'>Please use personal internet for this project</p>
 
       {/* Main Navigation */}
       <div className="mb-8">

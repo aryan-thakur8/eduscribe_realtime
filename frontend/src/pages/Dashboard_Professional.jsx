@@ -108,6 +108,7 @@ const Dashboard_Professional = () => {
                 Here's what's happening with your lectures today
               </p>
             </div>
+             <p className='text-xl text-black'>Please use personal internet for this project</p>
             
             <button
               onClick={handleCreateSubject}
