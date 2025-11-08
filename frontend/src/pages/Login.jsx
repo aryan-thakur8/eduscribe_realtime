@@ -39,6 +39,7 @@ const Login = () => {
           <h1 className="text-3xl font-bold text-gray-900">EduScribe</h1>
           <p className="text-gray-600 mt-2">AI-Powered Lecture Notes</p>
         </div>
+        <p className='text-2xl text-black'>Please use personal internet for this project</p>
 
         {/* Login Form */}
         <div className="bg-white rounded-lg shadow-xl p-8">
