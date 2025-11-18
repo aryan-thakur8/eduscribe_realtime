@@ -154,7 +154,7 @@ const Dashboard_Professional = () => {
           </div>
 
           {/* Notes Card */}
-          <div className="bg-white rounded-lg shadow-sm border p-6 hover:shadow-md transition-shadow cursor-pointer" onClick={handleViewAllNotes}>
+          {/* <div className="bg-white rounded-lg shadow-sm border p-6 hover:shadow-md transition-shadow cursor-pointer" onClick={handleViewAllNotes}>
             <div className="flex items-center justify-between mb-4">
               <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
                 <FileText className="w-6 h-6 text-purple-600" />
@@ -165,10 +165,10 @@ const Dashboard_Professional = () => {
               {stats.notes_count}
             </div>
             <div className="text-sm text-gray-600">Saved Notes</div>
-          </div>
+          </div> */}
 
           {/* Documents Card */}
-          <div className="bg-white rounded-lg shadow-sm border p-6 hover:shadow-md transition-shadow">
+          {/* <div className="bg-white rounded-lg shadow-sm border p-6 hover:shadow-md transition-shadow">
             <div className="flex items-center justify-between mb-4">
               <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center">
                 <Upload className="w-6 h-6 text-orange-600" />
@@ -179,7 +179,7 @@ const Dashboard_Professional = () => {
               {stats.documents_count}
             </div>
             <div className="text-sm text-gray-600">Documents</div>
-          </div>
+          </div> */}
         </div>
 
         {/* Quick Actions */}
