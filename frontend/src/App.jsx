@@ -21,6 +21,7 @@ import Signup from './pages/Signup'
 import MyNotes from './pages/MyNotes'
 
 // Protected Route Component
+//test
 const ProtectedRoute = ({ children }) => {
   const { isAuthenticated, loading } = useAuth();
   
